@@ -1,0 +1,6 @@
+index="cloudflare_domains"  sourcetype="_json" 
+| spath input=_raw
+| mvexpand subdomains{}
+| stats count by zone, subdomains{}
+| eval is_duplicate=if(count>4, "Duplicate", "Unique")
+| search is_duplicate="Unique"
