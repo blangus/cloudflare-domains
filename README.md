@@ -1,5 +1,8 @@
 Disclaimer: these are just personal notes, stuff could be wrong.
 
+What does it do?
+Fetch all domains/subdomains you have from Cloudflare, send the data to Splunk, trigger an alert when there are changes and send the alert as a board item to monday.com
+
 1. Add domains to Splunk via splunk script. (data input in Splunk and execute daily)
 2. Add alert to Splunk via search. (execute daily after data input)
 3. Create app in Splunk in order to execute custom script (new method)
