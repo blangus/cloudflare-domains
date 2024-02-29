@@ -10,12 +10,14 @@ After creating app in Splunk:
 add monday.py (named it scriptalert.py) to /opt/splunk/etc/apps/scriptalert/bin
 
 add following to alert_actions.conf in: /opt/splunk/etc/apps/scriptalert/default
+```bash
 [scriptalert]
 is_custom = 1
 label = script alert
 payload_format = json
-
+```
 Add following to app.conf in: /opt/splunk/etc/apps/scriptalert/default
+```bash
 [install]
 is_configured = 1
 
@@ -27,4 +29,4 @@ label = scriptalert
 author = 
 description = scriptalert
 version = 1.0.0
-
+```
