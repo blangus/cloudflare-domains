@@ -1,5 +1,6 @@
 import requests
 import json
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 def get_all_cloudflare_zones(api_key):
     endpoint = "https://api.cloudflare.com/client/v4/zones"
@@ -44,7 +45,6 @@ def get_cloudflare_a_records(api_key, zone_id):
 
     if response.status_code == 200:
         data = response.json()
-        #only get A records and ignore wildcard
         a_records = set(record["name"] for record in data["result"] if record["type"] == "A" and "*" not in record["name"])
         return list(a_records)
     else:
@@ -53,19 +53,19 @@ def get_cloudflare_a_records(api_key, zone_id):
         return None
 
 def send_to_splunk(zone_name, a_records):
-    #if change to https do python verify false because self signed cert.
-    splunk_url = "http://localhost:8088/services/collector/event"   
-    headers = {"Authorization": "Splunk <>"}
+    splunk_url = "https://172.18.0.2:8088/services/collector/event"   
+    headers = {"Authorization": "Splunk <hec>"}
     data = {"zone": zone_name, "subdomains": a_records if a_records else []}
     payload = {"event": json.dumps(data), "index": "cloudflare_domains"}  # Specify the index
-    response = requests.post(splunk_url, headers=headers, json=payload)
+    response = requests.post(splunk_url, headers=headers, json=payload, verify=False)
 
 # Replace this with your actual Cloudflare API key
-api_key = "<>"
+api_key = ""
 
 # Get all zones
 zones = get_all_cloudflare_zones(api_key)
 
+#TODO CLEAN UP
 if zones:
     total_subdomains = 0
 
@@ -84,5 +84,6 @@ if zones:
             print("A Records (IPv4 addresses):")
             for a_record in a_records:
                 print(a_record)
+
 
     print(f"\nTotal Subdomains Found: {total_subdomains}")
